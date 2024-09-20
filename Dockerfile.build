@@ -1,0 +1,16 @@
+FROM ocaml/opam:alpine-ocaml-5.1
+
+RUN sudo apk add  gmp-dev libev-dev openssl-dev
+
+WORKDIR /app
+
+RUN opam install dream
+
+RUN sudo chmod a+xrw /app
+
+COPY dune-project /app/dune-project
+COPY bin/ /app/bin/
+
+RUN eval $(opam env) && dune build
+
+CMD ["/app/_build/default/bin/webserver.exe"]
